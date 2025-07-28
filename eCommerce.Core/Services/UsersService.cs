@@ -33,24 +33,30 @@ namespace eCommerce.Core.Services
 
         public async Task<AuthenticationResponseDTO?> Register(RegisterRequestDTO registerRequestDTO)
         {
-            ApplicationUser user = new ApplicationUser()
-            {
-                PersonName = registerRequestDTO.PersonName,
-                Email = registerRequestDTO.Email,
-                Password = registerRequestDTO.Password,
-                Gender = registerRequestDTO.Gender.ToString()
-            };
+            //ApplicationUser user = new ApplicationUser()
+            //{
+            //    PersonName = registerRequestDTO.PersonName,
+            //    Email = registerRequestDTO.Email,
+            //    Password = registerRequestDTO.Password,
+            //    Gender = registerRequestDTO.Gender.ToString()
+            //};
+            ApplicationUser user = _mapper.Map<ApplicationUser>(registerRequestDTO);
             ApplicationUser? registeredUser = await _userRepository.AddUserAsync(user);
             if (registeredUser == null)
             {
-                return null; 
+                return null;
             }
-            return new AuthenticationResponseDTO(
-                registeredUser.UserId,
-                registeredUser.Email,
-                registeredUser.PersonName,
-                registeredUser.Gender,"token",Success:true
-                );
+            //return new AuthenticationResponseDTO(
+            //    registeredUser.UserId,
+            //    registeredUser.Email,
+            //    registeredUser.PersonName,
+            //    registeredUser.Gender,"token",Success:true
+            //    );
+            return _mapper.Map<AuthenticationResponseDTO>(registeredUser) with
+            {
+                Success = true,
+                Token = "token"
+            };
         }
     }
 }
